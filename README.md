@@ -14,6 +14,27 @@ et Universitaire (CHRU) de Brest, one of the partner institutions of the
 [STRATIF-AI](https://stratif-ai.eu/) consortium, which brings together fifteen
 research groups, universities and hospitals across Europe.
 
+## What it does
+ 
+The container segments **ischaemic stroke lesions on T1-weighted brain MRI**, across the acute,
+sub-acute and chronic stages.
+ 
+Input: one skull-stripped T1w volume in its native acquisition geometry, plus an optional
+metadata file.
+ 
+Output, both on the input voxel grid:
+ 
+- a binary lesion mask (`uint8`, values 0 and 1)
+- a voxelwise lesion probability map (`float32`, range 0 to 1)
+  
+The prediction comes from an ensemble of three nnU-Net v2 folds whose softmax outputs are
+averaged before the argmax. No lesion detected is a valid output: scans without a visible
+lesion yield an empty mask.
+ 
+This is research software. It is not a medical device and is not validated for clinical use.
+ 
+---
+
 This repository contains everything needed to rebuild the submitted container image
 and run it on a T1-weighted MRI volume. Model weights are downloaded separately, see step 2.
 
@@ -77,9 +98,9 @@ docker run --rm --entrypoint python isles26-submission -c "import torch; print(t
 
 ## 2. Download the weights
 
-**Link:** `https://drive.google.com/file/d/1pSfnqBmiTQp1CA5FxOoPAz52tGuObpca/view?usp=sharing`
-**File:** `model.zip` (1.14 GB)
-**SHA-256:** `d2698ff480a46f34f28b0a3bc759c123284288f330a95df5c4361b99f694a223`
+- **Link:** https://drive.google.com/file/d/1pSfnqBmiTQp1CA5FxOoPAz52tGuObpca/view?usp=sharing
+- **File:** `model.zip` (1.14 GB)
+- **SHA-256:** `d2698ff480a46f34f28b0a3bc759c123284288f330a95df5c4361b99f694a223`
 
 ```bash
 sha256sum model.zip             # compare with the value above
