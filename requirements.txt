@@ -1,0 +1,40 @@
+# ISLES'26 submission image dependencies.
+#
+# DERIVATION
+#   Versions are taken from the training environment (pip freeze) so that the container runs
+#   the same code paths that produced the checkpoints. Only the packages actually imported at
+#   inference time are listed; pip resolves the transitive dependencies of nnunetv2
+#   (acvl_utils, batchgenerators, batchgeneratorsv2, blosc2, connected-components-3d,
+#   dynamic_network_architectures, einops, scipy, tqdm) on its own.
+#
+# DELIBERATE EXCLUSIONS
+#   torch, torchvision, triton, nvidia-*   supplied by the base image. The virtualenv is
+#                                          created with --system-site-packages, so pip treats
+#                                          the torch requirement of nnunetv2 as satisfied and
+#                                          does not substitute a CPU wheel. Pinning them here
+#                                          would conflict with the CUDA build already present.
+#   jupyterlab, notebook, ipykernel, marimo    development tooling
+#   matplotlib, seaborn, plotly, altair        plotting, unused at inference
+#   pandas, scikit-learn, umap-learn, numba    benchmark and analysis only
+#   panoptica                                  offline metric computation only
+#   timm, huggingface_hub, safetensors         not used by this pipeline
+#
+# VERIFICATION AFTER BUILD
+#   podman run --rm --entrypoint python <tag> -c \
+#     "import torch, nnunetv2, SimpleITK, nibabel, skimage; print(torch.version.cuda)"
+
+# HTTP server required by the Grand Challenge invoke API. fastapi is absent from the training
+# environment because it plays no role there; it must be added explicitly.
+fastapi==0.115.6
+uvicorn==0.51.0
+
+# Inference stack, versions aligned with the training environment.
+nnunetv2==2.8.1
+SimpleITK==2.5.5
+nibabel==5.4.2
+scikit-image==0.26.0
+
+# numpy 2.x is what the checkpoints were produced under. Pinning the major version prevents a
+# silent downgrade to 1.x through a transitive constraint, which would change array promotion
+# rules between training and inference.
+numpy==2.2.6
