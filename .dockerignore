@@ -1,0 +1,3 @@
+test/
+*.tar.gz
+__pycache__/
