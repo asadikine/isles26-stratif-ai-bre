@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/img/stratif-ai.png" alt="STRATIF-AI" height="72" />
+  <img src="docs/img/stratif-ai.png" alt="STRATIF-AI" height="90" />
   &nbsp;&nbsp;&nbsp;&nbsp;
   <img src="docs/img/chu-brest-logo.svg" alt="CHU de Brest" height="72" />
 </div>
