@@ -1,8 +1,8 @@
-<div align="center">
-  <img src="docs/img/stratif-ai.png" alt="STRATIF-AI" height="100" style="vertical-align: middle;" />
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/img/chu-brest-logo.svg" alt="CHU de Brest" height="72" style="vertical-align: middle;" />
-</div>
+<table border="0" align="center"><tr>
+  <td align="center" valign="middle"><img src="docs/img/stratif-ai.png" alt="STRATIF-AI" height="100"></td>
+  <td width="50"></td>
+  <td align="center" valign="middle"><img src="docs/img/chu-brest-logo.svg" alt="CHU de Brest" height="72"></td>
+</tr></table>
 
 # ISLES'26 — submission container
 
