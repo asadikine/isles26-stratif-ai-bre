@@ -1,5 +1,5 @@
 <table border="0" align="center"><tr>
-  <td align="center" valign="middle"><img src="docs/img/stratif-ai.png" alt="STRATIF-AI" height="120"></td>
+  <td align="center" valign="middle"><img src="docs/img/stratif-ai.png" alt="STRATIF-AI" height="150"></td>
   <td width="50"></td>
   <td align="center" valign="middle"><img src="docs/img/chu-brest-logo.svg" alt="CHU de Brest" height="72"></td>
 </tr></table>
