@@ -1,13 +1,21 @@
+<div align="center">
+  <img src="docs/img/stratif-ai-logo.jpg" alt="STRATIF-AI" height="72" />
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/img/chu-brest-logo.svg" alt="CHU de Brest" height="72" />
+</div>
+
 # ISLES'26 — submission container
 
 Source code for the Grand Challenge algorithm `BRE SEG`, submitted to the
-[ISLES'26 challenge](https://isles-26.grand-challenge.org/) by team **STRATIF-AI-BRE**.
+[ISLES'26 challenge](https://isles-26.grand-challenge.org/) by team STRATIF-AI-BRE.
 
-This work was carried out within the [STRATIF-AI](https://stratif-ai.eu/) project, funded by
-the European Union's Horizon Europe research and innovation programme.
+The algorithm was developed by the Brest team at the Centre Hospitalier Régional
+et Universitaire (CHRU) de Brest, one of the partner institutions of the
+[STRATIF-AI](https://stratif-ai.eu/) consortium, which brings together fifteen
+research groups, universities and hospitals across Europe.
 
-This repository contains everything needed to rebuild the submitted container image and run it
-on a T1-weighted MRI volume. Model weights are downloaded separately, see step 2.
+This repository contains everything needed to rebuild the submitted container image
+and run it on a T1-weighted MRI volume. Model weights are downloaded separately, see step 2.
 
 ---
 
