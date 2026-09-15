@@ -18,7 +18,18 @@ research groups, universities and hospitals across Europe.
  
 The container segments **ischaemic stroke lesions on T1-weighted brain MRI**, across the acute,
 sub-acute and chronic stages.
- 
+
+<p align="center">
+  <img src="docs/img/ex-holdout-case.png"
+       alt="Axial T1w slice, expert annotation and ensemble prediction for a held-out case"
+       width="640">
+</p>
+
+<p align="center">
+  <sub><b>Figure 1.</b> A held-out sub-acute case, never seen during training or model selection:
+  axial T1w slice, expert annotation, and the binary mask produced by the three-fold ensemble.</sub>
+</p>
+
 Input: one skull-stripped T1w volume in its native acquisition geometry, plus an optional
 metadata file.
  
