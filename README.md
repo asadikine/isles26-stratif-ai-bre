@@ -9,6 +9,11 @@
 Source code for the Grand Challenge algorithm `BRE SEG`, submitted to the
 [ISLES'26 challenge](https://isles-26.grand-challenge.org/) by team STRATIF-AI-BRE.
 
+ISLES'26 is part of [MICCAI 2026](https://conferences.miccai.org/2026/en/) in Strasbourg,
+France, where it runs on 27 September 2026 as a joint full-day event with the
+[SWITCH+ workshop](https://switchmiccai.github.io/switch/) and the TopBrain and
+TopAneu challenges.
+
 The algorithm was developed by the Brest team at the Centre Hospitalier Régional
 et Universitaire (CHRU) de Brest, one of the partner institutions of the
 [STRATIF-AI](https://stratif-ai.eu/) consortium, which brings together fifteen
