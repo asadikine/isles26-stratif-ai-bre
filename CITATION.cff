@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it using the metadata below."
-title: "BRE SEG: ischaemic stroke lesion segmentation on T1-weighted MRI (ISLES'26 submission, team STRATIF-AI-BRE)"
+title: "Ischaemic stroke lesion segmentation on T1-weighted MRI: STRATIF-AI-BRE submission to the ISLES'26 challenge"
 type: software
 authors:
   - given-names: Amine
@@ -12,8 +12,8 @@ date-released: 2026-10-22
 license: Apache-2.0
 repository-code: "https://github.com/asadikine/isles26-stratif-ai-bre"
 abstract: >-
-  Source code and container of the algorithm BRE SEG, submitted by team
-  STRATIF-AI-BRE to the ISLES'26 challenge (MICCAI 2026). It segments
+  Source code and container of the algorithm submitted by team
+  STRATIF-AI-BRE (published on Grand Challenge as "BRE SEG") to the ISLES'26 challenge (MICCAI 2026). It segments
   ischaemic stroke lesions on skull-stripped T1-weighted brain MRI at acute,
   sub-acute and chronic stages, using an ensemble of three nnU-Net v2 folds.
   Research software, not a medical device. Developed within the STRATIF-AI
