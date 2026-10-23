@@ -6,6 +6,10 @@
 
 # ISLES'26 — submission container
 
+[![Code DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23570376.svg)](https://doi.org/10.5281/zenodo.23570376)
+[![Weights DOI](https://img.shields.io/badge/weights%20DOI-10.5281%2Fzenodo.23595249-blue)](https://doi.org/10.5281/zenodo.23595249)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
 Source code for the Grand Challenge algorithm `BRE SEG`, submitted to the
 [ISLES'26 challenge](https://isles-26.grand-challenge.org/) by team STRATIF-AI-BRE.
 
@@ -14,10 +18,10 @@ France, where it runs on 27 September 2026 as a joint full-day event with the
 [SWITCH+ workshop](https://switchmiccai.github.io/switch/) and the TopBrain and
 TopAneu challenges.
 
-The algorithm was developed by the Brest team at the Centre Hospitalier Régional
-et Universitaire (CHRU) de Brest, one of the partner institutions of the
-[STRATIF-AI](https://stratif-ai.eu/) consortium, which brings together fifteen
-research groups, universities and hospitals across Europe.
+The algorithm was developed by Amine Sadikine at the University Hospital of Brest (CHU de
+Brest), one of the partner institutions of the [STRATIF-AI](https://stratif-ai.eu/)
+consortium, which brings together fifteen research groups, universities and hospitals across
+Europe.
 
 ## What it does
  
@@ -48,6 +52,82 @@ averaged before the argmax. No lesion detected is a valid output: scans without 
 lesion yield an empty mask.
  
 This is research software. It is not a medical device and is not validated for clinical use.
+
+---
+
+## Method
+
+| Component | Choice |
+|---|---|
+| Data split | 3 center-disjoint folds plus an internal holdout, assigned by a mixed-integer linear program |
+| Preprocessing | RAS reorientation (no interpolation), resampling to 1 × 1 × 1 mm, percentile-clipped z-score inside the brain mask |
+| Architecture | 3D nnU-Net v2, ResEnc-L residual encoder, instance normalisation, deep supervision, patch 160 × 192 × 160 |
+| Loss | Dice + cross-entropy |
+| Augmentation | nnU-Net default pipeline; foreground oversampling raised from 0.33 to 0.50 |
+| Training | 500 epochs, SGD with Nesterov momentum 0.99, initial learning rate 0.01, weight decay 3e-5, polynomial decay |
+| Final model | Ensemble of the three fold models (softmax averaging), mirroring test-time augmentation over the three axes |
+| Post-processing | None |
+| External data, pre-training | None |
+
+### Center-disjoint split
+
+nnU-Net's default folds are random at the subject level, so scans from the same acquisition
+site end up in both training and validation. Here, each **center** is assigned as a whole to
+one of three training folds or to an internal holdout. Grouping by center alone leaves the
+subsets unbalanced, and classical stratification can balance only one composite label at a
+time, so the assignment is solved as a mixed-integer linear program:
+
+- each center is summarised by a profile of lesion chronicity, volume distribution and
+  multifocality, standardised by the scan-weighted median and interquartile range;
+- the solver minimises the weighted L1 distance between each subset's profile and the
+  cohort-level profile;
+- hard constraints keep every center in a single subset and bound the subset size and the
+  minimum number of acute scans per subset.
+
+Because no center is shared between partitions, every validation score is measured out of
+domain. The holdout is used neither for training nor for ensembling.
+
+### Intensity normalisation
+
+nnU-Net's default per-image z-score is replaced by a percentile-clipped z-score computed inside
+the brain mask (`nnunet_normalization.py`). Foreground intensities are clipped at the 0.5th and
+99.5th percentiles, and the mean and standard deviation are recomputed after clipping. This
+keeps hyperintense outliers from inflating the variance and compressing the low-contrast range
+where acute lesions lie.
+
+### Training
+
+The network topology comes from the ResEnc-L plans; the custom trainer
+(`nnunet_trainer_isles26.py`) only changes foreground oversampling and the number of epochs.
+
+```bash
+nnUNetv2_plan_and_preprocess -d 502 -pl nnUNetPlannerResEncL
+# set "ClippedZScoreNormalization" and "use_mask_for_norm": true in the plans,
+# then re-run nnUNetv2_preprocess (see the header of nnunet_normalization.py)
+nnUNetv2_train 502 3d_fullres FOLD -p nnUNetResEncUNetLPlans -tr nnUNetTrainerISLES26A_500epochs
+# FOLD = 0, 1, 2, with the center-disjoint splits_final.json in nnUNet_preprocessed/Dataset502_*/
+```
+
+No external data and no pre-training were used.
+
+---
+
+## Results
+
+Performance of the submitted ensemble on the ISLES'26 **test set** (about 500 T1-weighted
+scans never seen during development), computed by the challenge organisers on Grand Challenge:
+
+| Metric | Value |
+|---|---|
+| Dice ↑ | 0.712 [0.364] |
+| Lesion-wise F1 ↑ | 0.500 [0.381] |
+| Absolute volume difference (AVD) ↓ | 0.752 [3.547] |
+| Absolute lesion count difference (ALC) ↓ | 1.000 [2.000] |
+| PR-AUC of the probability map ↑ | 0.820 [0.325] |
+
+Values as reported by the organisers' evaluation (bracketed figure: dispersion across test
+cases). These are preliminary results communicated at MICCAI 2026; the official results and
+metric definitions will be published in the ISLES'26 challenge paper.
  
 ---
 
@@ -114,11 +194,13 @@ docker run --rm --entrypoint python isles26-submission -c "import torch; print(t
 
 ## 2. Download the weights
 
-- **Link:** https://drive.google.com/file/d/1pSfnqBmiTQp1CA5FxOoPAz52tGuObpca/view?usp=sharing
+The weights are archived on Zenodo: [doi:10.5281/zenodo.23595249](https://doi.org/10.5281/zenodo.23595249)
+
 - **File:** `model.zip` (1.14 GB)
 - **SHA-256:** `d2698ff480a46f34f28b0a3bc759c123284288f330a95df5c4361b99f694a223`
 
 ```bash
+wget -O model.zip "https://zenodo.org/records/23595249/files/model.zip?download=1"
 sha256sum model.zip             # compare with the value above
 unzip model.zip -d model
 find model -type f | sort
@@ -251,7 +333,7 @@ Or `./do_save_podman.sh`, which produces both and validates their formats.
 Note that `tar -C model .` archives the *contents* of the directory. Archiving the directory
 itself produces `/opt/ml/model/model/...` after extraction, and the predictor will not find
 `plans.json`. The same applies to the `model.zip` distributed above: it is a convenience
-format for the shared drive, whereas Grand Challenge expects `model.tar.gz`. Repack before
+format for distribution, whereas Grand Challenge expects `model.tar.gz`. Repack before
 uploading to the platform.
 
 Sizes for the submitted artefacts: image archive 4.1 GB, weights 1.14 GB. Grand Challenge
@@ -286,6 +368,7 @@ validation predictions and can reach tens of gigabytes.
 |---|---|
 | `Dockerfile` | Image definition; installs the trainer and normalisation into `nnunetv2` |
 | `requirements.txt` | Pinned dependencies; `torch` comes from the base image |
+| `CITATION.cff` | Citation metadata (GitHub "Cite this repository", Zenodo) |
 | `app.py` | HTTP server implementing the Grand Challenge `invoke` API |
 | `inference.py` | Per-case inference; entry points `init_model()` and `run(model)` |
 | `isles26_preprocess.py` | Preprocessing contract, shared with the training pipeline |
@@ -317,6 +400,43 @@ validation predictions and can reach tens of gigabytes.
 
 Built with Podman 5.8.2 on RHEL 9.8 (`runc` runtime), NVIDIA A40. Evaluated on Grand Challenge
 on an NVIDIA T4 (16 GB VRAM, 16 GB RAM).
+
+---
+
+## Citation
+
+If you use this code or the weights, please cite them. GitHub's **Cite this repository**
+button (from `CITATION.cff`) gives the reference in APA and BibTeX.
+
+| Artefact | Zenodo DOI |
+|---|---|
+| Code (v1.0.1) | [10.5281/zenodo.23570376](https://doi.org/10.5281/zenodo.23570376) |
+| Model weights (1.0.0) | [10.5281/zenodo.23595249](https://doi.org/10.5281/zenodo.23595249) |
+
+```bibtex
+@software{sadikine2026isles26code,
+  author  = {Sadikine, Amine},
+  title   = {Ischaemic stroke lesion segmentation on {T1}-weighted {MRI}:
+             {STRATIF-AI-BRE} submission to the {ISLES'26} challenge},
+  year    = {2026},
+  version = {1.0.1},
+  doi     = {10.5281/zenodo.23570376},
+  url     = {https://github.com/asadikine/isles26-stratif-ai-bre}
+}
+
+@misc{sadikine2026isles26weights,
+  author  = {Sadikine, Amine},
+  title   = {Model weights: ischaemic stroke lesion segmentation on {T1}-weighted {MRI}
+             ({STRATIF-AI-BRE}, {ISLES'26})},
+  year    = {2026},
+  version = {1.0.0},
+  doi     = {10.5281/zenodo.23595249},
+  publisher = {Zenodo}
+}
+```
+
+The ISLES'26 benchmark paper, which will describe all participating methods, is in
+preparation. This section will be updated with its reference.
 
 ---
 

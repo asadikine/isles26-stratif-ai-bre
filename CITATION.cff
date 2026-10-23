@@ -1,32 +1,44 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it using the metadata below."
+message: "If you use this software or its weights, please cite it using the metadata below."
 title: "Ischaemic stroke lesion segmentation on T1-weighted MRI: STRATIF-AI-BRE submission to the ISLES'26 challenge"
 type: software
 authors:
   - given-names: Amine
     family-names: Sadikine
     orcid: "https://orcid.org/0009-0001-4313-0476"
-    affiliation: "CHRU de Brest, Brest, France"
+    affiliation: "University Hospital of Brest, Neurology and Stroke Unit Department, 29200 Brest, France; Univ Brest, Inserm, EFS, UMR 1078, GGB, F-29200 Brest, France"
 version: 1.0.1
 date-released: 2026-10-22
 license: Apache-2.0
 repository-code: "https://github.com/asadikine/isles26-stratif-ai-bre"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23570376
+    description: "Zenodo archive of this code, version 1.0.1"
+  - type: doi
+    value: 10.5281/zenodo.23595249
+    description: "Trained model weights, archived on Zenodo"
 abstract: >-
-  Source code and container of the algorithm submitted by team
-  STRATIF-AI-BRE (published on Grand Challenge as "BRE SEG") to the ISLES'26 challenge, held at the SWITCH+ workshop of MICCAI 2026
-  (27 September 2026). It segments
-  ischaemic stroke lesions on skull-stripped T1-weighted brain MRI at acute,
-  sub-acute and chronic stages, using an ensemble of three nnU-Net v2 folds.
-  Research software, not a medical device. Developed within the STRATIF-AI
-  project, funded by the European Union under Horizon Europe (grant
-  agreement No 101080875).
+  Source code and container of the algorithm submitted by team STRATIF-AI-BRE
+  (published on Grand Challenge as "BRE SEG") to the ISLES'26 challenge, held at
+  the SWITCH+ workshop of MICCAI 2026 (27 September 2026). It segments ischaemic
+  stroke lesions on skull-stripped T1-weighted brain MRI at acute, sub-acute and
+  chronic stages. The model is a 3D nnU-Net v2 with a ResEnc-L residual encoder,
+  trained on a center-disjoint split solved by mixed-integer linear programming
+  and on a percentile-clipped z-score normalisation computed inside the brain
+  mask; the prediction is an ensemble of three fold models with mirroring
+  test-time augmentation. Research software, not a medical device. Developed
+  within the STRATIF-AI project, funded by the European Union under Horizon
+  Europe (grant agreement No 101080875).
 keywords:
   - stroke
   - ischaemic stroke lesion segmentation
   - T1-weighted MRI
   - nnU-Net
+  - ResEnc-L
+  - center-disjoint cross-validation
+  - mixed-integer linear programming
   - ISLES'26
   - MICCAI 2026
   - SWITCH+ workshop
   - medical image segmentation
-  - deep learning
