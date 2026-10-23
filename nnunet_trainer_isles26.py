@@ -36,7 +36,7 @@ WHAT PATH A DELIBERATELY DOES NOT DO
     - No determinism forcing. torch.use_deterministic_algorithms and cudnn.deterministic are
       left untouched, so cuDNN keeps benchmark mode. This is a speed decision: full 3D
       determinism costs 10-20 percent throughput and some 3D ops refuse to run under it.
-      Reproducibility is instead anchored by the frozen split and the 5-fold ensemble.
+      Reproducibility is instead anchored by the frozen split and the 3-fold ensemble.
     - No transform-probability tuning in code. Heavier augmentation is available WITHOUT
       editing this file by selecting the built-in nnUNetTrainerDA5 at the command line
       (-tr nnUNetTrainerDA5). Tuning individual transform probabilities requires overriding
